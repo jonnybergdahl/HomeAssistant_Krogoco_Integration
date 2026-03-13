@@ -1,0 +1,1 @@
+# HomeAssistant_Krogoco_Integration
