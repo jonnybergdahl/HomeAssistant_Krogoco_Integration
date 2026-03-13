@@ -125,7 +125,11 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
 
         # Timed events - convert time strings to time objects if needed
         start_time = scraped_event.start_time if isinstance(scraped_event.start_time, time) else time.fromisoformat(scraped_event.start_time)
-        end_time = scraped_event.end_time if isinstance(scraped_event.end_time, time) else time.fromisoformat(scraped_event.end_time)
+        # If no end time, assume end of day
+        if scraped_event.end_time:
+            end_time = scraped_event.end_time if isinstance(scraped_event.end_time, time) else time.fromisoformat(scraped_event.end_time)
+        else:
+            end_time = time(23, 59)
 
         start_dt = datetime.combine(
             scraped_event.date,
