@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Krog & Co Calendar",
+        "description": "Set up your Krog & Co calendar for a specific city.",
+        "data": {
+          "city": "City",
+          "blacklist": "Blacklist (comma-separated terms to exclude events)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to Krog & Co website. Please check your internet connection and try again."
+    },
+    "abort": {
+      "already_configured": "This city is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Krog & Co Calendar Options",
+        "description": "Configure calendar options.",
+        "data": {
+          "blacklist": "Blacklist (comma-separated terms to exclude events)",
+          "months": "Months ahead to fetch (1-12)"
+        }
+      }
+    }
+  }
+}

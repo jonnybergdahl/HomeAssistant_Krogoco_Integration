@@ -1,0 +1,9 @@
+{
+  "domain": "krog_company_calendar",
+  "name": "Krog & Co Calendar",
+  "codeowners": ["@jonnybergdahl"],
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "requirements": ["krog-company-ics @ git+https://github.com/jonnybergdahl/Python-Krogoco-Ics.git@main"],
+  "version": "0.1.0"
+}
