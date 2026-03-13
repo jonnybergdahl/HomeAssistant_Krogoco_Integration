@@ -64,7 +64,7 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
 
             # For events today with times, check if they're currently active or upcoming
             if scraped_event.date == today and scraped_event.start_time and not scraped_event.all_day:
-                start_time = time.fromisoformat(scraped_event.start_time)
+                start_time = scraped_event.start_time if isinstance(scraped_event.start_time, time) else time.fromisoformat(scraped_event.start_time)
                 event_start = datetime.combine(
                     scraped_event.date,
                     start_time,
@@ -72,7 +72,7 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
                 )
                 # If we have an end time, use it; otherwise assume event is still relevant
                 if scraped_event.end_time:
-                    end_time = time.fromisoformat(scraped_event.end_time)
+                    end_time = scraped_event.end_time if isinstance(scraped_event.end_time, time) else time.fromisoformat(scraped_event.end_time)
                     event_end = datetime.combine(
                         scraped_event.date,
                         end_time,
@@ -123,9 +123,9 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
                 description=scraped_event.url,
             )
 
-        # Timed events - convert time strings to time objects
-        start_time = time.fromisoformat(scraped_event.start_time)
-        end_time = time.fromisoformat(scraped_event.end_time)
+        # Timed events - convert time strings to time objects if needed
+        start_time = scraped_event.start_time if isinstance(scraped_event.start_time, time) else time.fromisoformat(scraped_event.start_time)
+        end_time = scraped_event.end_time if isinstance(scraped_event.end_time, time) else time.fromisoformat(scraped_event.end_time)
 
         start_dt = datetime.combine(
             scraped_event.date,
