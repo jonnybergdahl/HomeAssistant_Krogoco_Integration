@@ -106,7 +106,7 @@ class KrogCompanyCalendarOptionsFlow(OptionsFlow):
                 title="",
                 data={
                     CONF_BLACKLIST: blacklist,
-                    CONF_MONTHS: user_input[CONF_MONTHS],
+                    CONF_MONTHS: int(user_input[CONF_MONTHS]),
                 },
             )
 
