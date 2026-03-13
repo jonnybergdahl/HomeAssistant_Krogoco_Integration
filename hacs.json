@@ -2,6 +2,5 @@
   "name": "Krog & Co Calendar",
   "country": ["SE"],
   "homeassistant": "2024.1.0",
-  "iot_class": "Cloud Polling",
   "render_readme": true
 }
