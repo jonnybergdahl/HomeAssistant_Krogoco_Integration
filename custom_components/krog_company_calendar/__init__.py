@@ -20,7 +20,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     city = entry.data[CONF_CITY]
     # Options take precedence over data for reconfigurable values
     blacklist = entry.options.get(CONF_BLACKLIST, entry.data.get(CONF_BLACKLIST, []))
-    months = entry.options.get(CONF_MONTHS, entry.data.get(CONF_MONTHS, DEFAULT_MONTHS))
+    months = int(entry.options.get(CONF_MONTHS, entry.data.get(CONF_MONTHS, DEFAULT_MONTHS)))
 
     coordinator = KrogCompanyCalendarCoordinator(hass, entry, city, months, blacklist)
     await coordinator.async_config_entry_first_refresh()

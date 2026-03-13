@@ -125,8 +125,8 @@ async def test_options_flow(hass: HomeAssistant, mock_config_entry) -> None:
     )
 
     assert result2["type"] == FlowResultType.CREATE_ENTRY
-    assert mock_config_entry.data[CONF_BLACKLIST] == ["new", "blacklist"]
-    assert mock_config_entry.data[CONF_MONTHS] == 3
+    assert mock_config_entry.options[CONF_BLACKLIST] == ["new", "blacklist"]
+    assert mock_config_entry.options[CONF_MONTHS] == 3
 
 
 async def test_options_flow_empty_blacklist(hass: HomeAssistant, mock_config_entry) -> None:
@@ -144,5 +144,5 @@ async def test_options_flow_empty_blacklist(hass: HomeAssistant, mock_config_ent
     )
 
     assert result2["type"] == FlowResultType.CREATE_ENTRY
-    assert mock_config_entry.data[CONF_BLACKLIST] == []
-    assert mock_config_entry.data[CONF_MONTHS] == 2
+    assert mock_config_entry.options[CONF_BLACKLIST] == []
+    assert mock_config_entry.options[CONF_MONTHS] == 2
