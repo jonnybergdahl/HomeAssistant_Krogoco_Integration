@@ -3,6 +3,8 @@
   "name": "Krog & Co Calendar",
   "codeowners": ["@jonnybergdahl"],
   "config_flow": true,
+  "documentation": "https://github.com/jonnybergdahl/HomeAssistant_Krogoco_Integration",
+  "issue_tracker": "https://github.com/jonnybergdahl/HomeAssistant_Krogoco_Integration/issues",
   "iot_class": "cloud_polling",
   "requirements": ["krog-company-ics @ git+https://github.com/jonnybergdahl/Python-Krogoco-Ics.git@main"],
   "version": "0.1.0"
