@@ -11,6 +11,7 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigEntry, OptionsFlow
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import selector
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
@@ -100,27 +101,31 @@ class KrogCompanyCalendarOptionsFlow(OptionsFlow):
             blacklist_str = user_input.get(CONF_BLACKLIST, "")
             blacklist = [x.strip() for x in blacklist_str.split(",") if x.strip()]
 
-            # Update config entry data
-            self.hass.config_entries.async_update_entry(
-                self.config_entry,
+            # Return options data (this will trigger the update listener)
+            return self.async_create_entry(
+                title="",
                 data={
-                    **self.config_entry.data,
                     CONF_BLACKLIST: blacklist,
                     CONF_MONTHS: user_input[CONF_MONTHS],
                 },
             )
-            return self.async_create_entry(title="", data={})
 
-        # Get current values
-        blacklist = self.config_entry.data.get(CONF_BLACKLIST, [])
+        # Get current values (options take precedence over data)
+        blacklist = self.config_entry.options.get(
+            CONF_BLACKLIST, self.config_entry.data.get(CONF_BLACKLIST, [])
+        )
         blacklist_str = ", ".join(blacklist) if blacklist else ""
-        months = self.config_entry.data.get(CONF_MONTHS, DEFAULT_MONTHS)
+        months = self.config_entry.options.get(
+            CONF_MONTHS, self.config_entry.data.get(CONF_MONTHS, DEFAULT_MONTHS)
+        )
 
         data_schema = vol.Schema(
             {
-                vol.Optional(CONF_BLACKLIST, default=blacklist_str): cv.string,
-                vol.Optional(CONF_MONTHS, default=months): vol.All(
-                    vol.Coerce(int), vol.Range(min=1, max=12)
+                vol.Optional(CONF_BLACKLIST, default=blacklist_str): selector.TextSelector(
+                    selector.TextSelectorConfig(multiline=False)
+                ),
+                vol.Optional(CONF_MONTHS, default=months): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=1, max=12, mode=selector.NumberSelectorMode.BOX)
                 ),
             }
         )
