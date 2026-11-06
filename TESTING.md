@@ -30,7 +30,7 @@ Or if you're using a virtual environment in PyCharm:
    - `freezegun`
 4. For `krog-company-ics`, use the terminal:
    ```bash
-   pip install git+https://github.com/jonnybergdahl/Python-Krogoco-Ics.git@main
+   pip install git+https://github.com/jonnybergdahl/Python-krog-company-ics.git@main
    ```
 
 ### 2. Configure PyCharm Test Runner

@@ -9,4 +9,4 @@ freezegun>=1.2.0
 homeassistant>=2024.1.0
 
 # Integration dependencies
-krog-company-ics @ git+https://github.com/jonnybergdahl/Python-Krogoco-Ics.git@main
+krog-company-ics @ git+https://github.com/jonnybergdahl/Python-krog-company-ics.git@main
