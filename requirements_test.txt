@@ -9,4 +9,4 @@ freezegun>=1.2.0
 homeassistant>=2024.12.0
 
 # Integration dependencies
-krogoco-calendar @ git+https://github.com/jonnybergdahl/Python-krogoco-calendar.git@main
+krogoco-calendar==1.0.0

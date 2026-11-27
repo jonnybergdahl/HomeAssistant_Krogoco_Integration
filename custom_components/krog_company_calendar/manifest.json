@@ -7,6 +7,6 @@
   "integration_type": "device",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jonnybergdahl/HomeAssistant_Krogoco_Integration/issues",
-  "requirements": ["krogoco-calendar@git+https://github.com/jonnybergdahl/Python-krogoco-calendar.git@main"],
+  "requirements": ["krogoco-calendar==1.0.0"],
   "version": "0.1.0"
 }

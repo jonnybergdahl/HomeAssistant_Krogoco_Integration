@@ -17,8 +17,6 @@ Install the test dependencies:
 pip install -r requirements_test.txt
 ```
 
-**Note:** The `krogoco-calendar` library is installed directly from GitHub since it's not available on PyPI.
-
 Or if you're using a virtual environment in PyCharm:
 
 1. Go to **File** → **Settings** → **Project** → **Python Interpreter**
@@ -28,10 +26,7 @@ Or if you're using a virtual environment in PyCharm:
    - `pytest-asyncio`
    - `pytest-homeassistant-custom-component`
    - `freezegun`
-4. For `krogoco-calendar`, use the terminal:
-   ```bash
-   pip install git+https://github.com/jonnybergdahl/Python-krogoco-calendar.git@main
-   ```
+   - `krogoco-calendar`
 
 ### 2. Configure PyCharm Test Runner
 
