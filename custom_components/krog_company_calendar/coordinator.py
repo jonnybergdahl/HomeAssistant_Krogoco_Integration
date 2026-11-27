@@ -2,7 +2,7 @@
 from datetime import timedelta
 import logging
 
-from krog_company_ics import KrogocoIcs
+from krogoco_calendar import KrogocoIcs
 import requests
 
 from homeassistant.config_entries import ConfigEntry

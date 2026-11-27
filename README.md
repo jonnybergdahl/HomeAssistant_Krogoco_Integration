@@ -130,7 +130,7 @@ Each event includes the Krog & Co event page URL in the description field, acces
 ## Development
 
 Built using:
-- [`krog-company-ics`](https://github.com/jonnybergdahl/krog-company-ics) library for event scraping
+- [`krogoco-calendar`](https://github.com/jonnybergdahl/Python-krogoco-calendar) library for event scraping
 - Home Assistant's `CalendarEntity` platform
 - `DataUpdateCoordinator` for efficient polling
 

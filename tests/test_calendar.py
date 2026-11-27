@@ -1,6 +1,6 @@
 """Test the Krog & Co Calendar entity."""
 from datetime import date, datetime, time, timedelta
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import pytest
 from freezegun import freeze_time
@@ -50,29 +50,20 @@ async def test_calendar_event_property_next_event(calendar_entity) -> None:
     assert event.description == "https://krogoco.se/jonkoping/event/pianobar"
 
 
-@freeze_time("2026-03-15 19:00:00")
+# Tests run with US/Pacific as the Home Assistant time zone (PDT, UTC-7, in March)
+@freeze_time("2026-03-16 02:00:00")  # 19:00 PDT on 2026-03-15
 async def test_calendar_event_property_current_event(calendar_entity) -> None:
     """Test event property returns current event."""
-    with patch("homeassistant.util.dt.now") as mock_now, \
-         patch("custom_components.krog_company_calendar.calendar.date") as mock_date:
-        # Mock now() and today() to return the frozen time
-        mock_now.return_value = datetime(2026, 3, 15, 19, 0, tzinfo=dt_util.DEFAULT_TIME_ZONE)
-        mock_date.today.return_value = date(2026, 3, 15)
-        event = calendar_entity.event
+    event = calendar_entity.event
 
     assert event is not None
     assert event.summary == "Pianobar"
 
 
-@freeze_time("2026-03-15 23:00:00")
+@freeze_time("2026-03-16 06:00:00")  # 23:00 PDT on 2026-03-15
 async def test_calendar_event_property_past_event(calendar_entity) -> None:
     """Test event property skips past events."""
-    with patch("homeassistant.util.dt.now") as mock_now, \
-         patch("custom_components.krog_company_calendar.calendar.date") as mock_date:
-        # Mock now() and today() to return the frozen time
-        mock_now.return_value = datetime(2026, 3, 15, 23, 0, tzinfo=dt_util.DEFAULT_TIME_ZONE)
-        mock_date.today.return_value = date(2026, 3, 15)
-        event = calendar_entity.event
+    event = calendar_entity.event
 
     # Should skip Pianobar (ended at 22:00) and return HV71 Match
     assert event is not None
@@ -141,6 +132,54 @@ async def test_get_events_past_midnight(calendar_entity, mock_hass) -> None:
 
 
 @freeze_time("2026-03-14 12:00:00")
+async def test_get_events_past_midnight_next_day(calendar_entity, mock_hass) -> None:
+    """Test an event running past midnight is included on the day it ends."""
+    start = datetime(2026, 3, 19, 0, 0, tzinfo=dt_util.DEFAULT_TIME_ZONE)
+    end = datetime(2026, 3, 20, 0, 0, tzinfo=dt_util.DEFAULT_TIME_ZONE)
+
+    events = await calendar_entity.async_get_events(mock_hass, start, end)
+
+    assert len(events) == 1
+    assert events[0].summary == "Late Night Event"
+
+
+@pytest.fixture
+def stockholm_time_zone():
+    """Use Europe/Stockholm as the Home Assistant time zone."""
+    original = dt_util.get_default_time_zone()
+    dt_util.set_default_time_zone(dt_util.get_time_zone("Europe/Stockholm"))
+    yield
+    dt_util.set_default_time_zone(original)
+
+
+# 23:30 UTC is 00:30 the next day in Stockholm
+@freeze_time("2026-03-18 23:30:00")
+async def test_calendar_event_property_after_midnight(
+    calendar_entity, stockholm_time_zone
+) -> None:
+    """Test an event that started yesterday and runs past midnight is current."""
+    event = calendar_entity.event
+
+    assert event is not None
+    assert event.summary == "Late Night Event"
+    tz = dt_util.get_time_zone("Europe/Stockholm")
+    assert event.start == datetime(2026, 3, 18, 23, 0, tzinfo=tz)
+    assert event.end == datetime(2026, 3, 19, 2, 0, tzinfo=tz)
+
+
+# 23:30 UTC is 00:30 the next day in Stockholm, after the festival day ended
+@freeze_time("2026-03-17 23:30:00")
+async def test_calendar_event_property_uses_ha_time_zone(
+    calendar_entity, stockholm_time_zone
+) -> None:
+    """Test the current day is taken from the Home Assistant time zone."""
+    event = calendar_entity.event
+
+    assert event is not None
+    assert event.summary == "Late Night Event"
+
+
+@freeze_time("2026-03-14 12:00:00")
 async def test_get_events_empty_range(calendar_entity, mock_hass) -> None:
     """Test async_get_events with no events in range."""
     start = datetime(2026, 3, 20, 0, 0, tzinfo=dt_util.DEFAULT_TIME_ZONE)
@@ -154,7 +193,7 @@ async def test_get_events_empty_range(calendar_entity, mock_hass) -> None:
 @freeze_time("2026-03-14 12:00:00")
 async def test_convert_to_calendar_event_timed(calendar_entity) -> None:
     """Test converting timed event."""
-    from krog_company_ics import CalendarEvent as ScrapedEvent
+    from krogoco_calendar import CalendarEvent as ScrapedEvent
 
     scraped_event = ScrapedEvent(
         date=date(2026, 3, 20),
@@ -176,7 +215,7 @@ async def test_convert_to_calendar_event_timed(calendar_entity) -> None:
 @freeze_time("2026-03-14 12:00:00")
 async def test_convert_to_calendar_event_all_day(calendar_entity) -> None:
     """Test converting all-day event."""
-    from krog_company_ics import CalendarEvent as ScrapedEvent
+    from krogoco_calendar import CalendarEvent as ScrapedEvent
 
     scraped_event = ScrapedEvent(
         date=date(2026, 3, 20),

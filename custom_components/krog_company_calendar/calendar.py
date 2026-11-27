@@ -1,5 +1,5 @@
 """Calendar entity for Krog & Co Calendar."""
-from datetime import date, datetime, time, timedelta
+from datetime import datetime, time, timedelta
 import logging
 
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
@@ -48,48 +48,22 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
             "manufacturer": "Krog & Co",
         }
 
+    def _calendar_events(self) -> list[CalendarEvent]:
+        """Return all scraped events converted to HA calendar events."""
+        if not self.coordinator.data:
+            return []
+        return [self._convert_to_calendar_event(e) for e in self.coordinator.data]
+
     @property
     def event(self) -> CalendarEvent | None:
         """Return the current or next event."""
-        if not self.coordinator.data:
-            return None
-
-        today = date.today()
         now = dt_util.now()
-
-        for scraped_event in self.coordinator.data:
-            # Skip events in the past
-            if scraped_event.date < today:
-                continue
-
-            # For events today with times, check if they're currently active or upcoming
-            if scraped_event.date == today and scraped_event.start_time and not scraped_event.all_day:
-                start_time = scraped_event.start_time if isinstance(scraped_event.start_time, time) else time.fromisoformat(scraped_event.start_time)
-                event_start = datetime.combine(
-                    scraped_event.date,
-                    start_time,
-                    tzinfo=dt_util.DEFAULT_TIME_ZONE,
-                )
-                # If we have an end time, use it; otherwise assume event is still relevant
-                if scraped_event.end_time:
-                    end_time = scraped_event.end_time if isinstance(scraped_event.end_time, time) else time.fromisoformat(scraped_event.end_time)
-                    event_end = datetime.combine(
-                        scraped_event.date,
-                        end_time,
-                        tzinfo=dt_util.DEFAULT_TIME_ZONE,
-                    )
-                    # Handle end times past midnight
-                    if end_time < start_time:
-                        event_end += timedelta(days=1)
-
-                    # Skip if event has already ended
-                    if now > event_end:
-                        continue
-
-            # Convert to HA CalendarEvent
-            return self._convert_to_calendar_event(scraped_event)
-
-        return None
+        # Events that haven't ended yet, including ones that started
+        # yesterday and run past midnight
+        upcoming = [e for e in self._calendar_events() if e.end_datetime_local > now]
+        if not upcoming:
+            return None
+        return min(upcoming, key=lambda e: e.start_datetime_local)
 
     async def async_get_events(
         self,
@@ -97,23 +71,16 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
         start_date: datetime,
         end_date: datetime,
     ) -> list[CalendarEvent]:
-        """Return calendar events within a datetime range."""
-        events = []
-
-        if not self.coordinator.data:
-            return events
-
-        for scraped_event in self.coordinator.data:
-            # Filter events within the requested date range
-            if scraped_event.date < start_date.date() or scraped_event.date >= end_date.date():
-                continue
-
-            events.append(self._convert_to_calendar_event(scraped_event))
-
-        return events
+        """Return calendar events that overlap a datetime range."""
+        return [
+            event
+            for event in self._calendar_events()
+            if event.start_datetime_local < end_date
+            and event.end_datetime_local > start_date
+        ]
 
     def _convert_to_calendar_event(self, scraped_event) -> CalendarEvent:
-        """Convert a krog_company_ics CalendarEvent to HA CalendarEvent."""
+        """Convert a krogoco_calendar CalendarEvent to HA CalendarEvent."""
         # All-day events
         if scraped_event.all_day or not scraped_event.start_time:
             return CalendarEvent(
@@ -123,33 +90,13 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
                 description=scraped_event.url,
             )
 
-        # Timed events - convert time strings to time objects if needed
-        if isinstance(scraped_event.start_time, time):
-            start_time = scraped_event.start_time
-        elif scraped_event.start_time:
-            start_time = time.fromisoformat(scraped_event.start_time)
-        else:
-            start_time = time(0, 0)
-
+        start_time = _parse_time(scraped_event.start_time)
         # If no end time, assume end of day
-        if isinstance(scraped_event.end_time, time):
-            end_time = scraped_event.end_time
-        elif scraped_event.end_time:
-            end_time = time.fromisoformat(scraped_event.end_time)
-        else:
-            end_time = time(23, 59)
+        end_time = _parse_time(scraped_event.end_time) if scraped_event.end_time else time(23, 59)
 
-        start_dt = datetime.combine(
-            scraped_event.date,
-            start_time,
-            tzinfo=dt_util.DEFAULT_TIME_ZONE,
-        )
-
-        end_dt = datetime.combine(
-            scraped_event.date,
-            end_time,
-            tzinfo=dt_util.DEFAULT_TIME_ZONE,
-        )
+        tz = dt_util.get_default_time_zone()
+        start_dt = datetime.combine(scraped_event.date, start_time, tzinfo=tz)
+        end_dt = datetime.combine(scraped_event.date, end_time, tzinfo=tz)
 
         # Handle end times past midnight
         if end_time < start_time:
@@ -161,3 +108,8 @@ class KrogCompanyCalendar(CoordinatorEntity[KrogCompanyCalendarCoordinator], Cal
             summary=scraped_event.title,
             description=scraped_event.url,
         )
+
+
+def _parse_time(value: time | str) -> time:
+    """Return a time from either a time object or an ISO time string."""
+    return value if isinstance(value, time) else time.fromisoformat(value)

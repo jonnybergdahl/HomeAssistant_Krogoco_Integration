@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from krog_company_ics import KrogocoIcs
+from krogoco_calendar import KrogocoIcs
 import requests
 import voluptuous as vol
 

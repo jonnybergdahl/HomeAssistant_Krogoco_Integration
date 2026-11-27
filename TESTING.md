@@ -17,7 +17,7 @@ Install the test dependencies:
 pip install -r requirements_test.txt
 ```
 
-**Note:** The `krog-company-ics` library is installed directly from GitHub since it's not available on PyPI.
+**Note:** The `krogoco-calendar` library is installed directly from GitHub since it's not available on PyPI.
 
 Or if you're using a virtual environment in PyCharm:
 
@@ -28,9 +28,9 @@ Or if you're using a virtual environment in PyCharm:
    - `pytest-asyncio`
    - `pytest-homeassistant-custom-component`
    - `freezegun`
-4. For `krog-company-ics`, use the terminal:
+4. For `krogoco-calendar`, use the terminal:
    ```bash
-   pip install git+https://github.com/jonnybergdahl/Python-krog-company-ics.git@main
+   pip install git+https://github.com/jonnybergdahl/Python-krogoco-calendar.git@main
    ```
 
 ### 2. Configure PyCharm Test Runner
@@ -86,7 +86,7 @@ pytest --cov=custom_components.krog_company_calendar --cov-report=html
 
 ### ModuleNotFoundError
 
-If you see `ModuleNotFoundError: No module named 'krog_company_ics'`:
+If you see `ModuleNotFoundError: No module named 'krogoco_calendar'`:
 
 1. Make sure you've installed the test dependencies: `pip install -r requirements_test.txt`
 2. Verify your PyCharm interpreter is using the correct virtual environment

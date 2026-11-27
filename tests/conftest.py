@@ -3,7 +3,7 @@ from datetime import date, time
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-from krog_company_ics import CalendarEvent
+from krogoco_calendar import CalendarEvent
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from homeassistant.core import HomeAssistant
