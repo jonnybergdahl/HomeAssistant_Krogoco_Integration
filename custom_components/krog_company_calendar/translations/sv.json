@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Krog & Co Kalender",
+        "description": "Ställ in Krog & Co-kalendern för en stad.",
+        "data": {
+          "city": "Stad",
+          "blacklist": "Svartlista (kommaseparerade ord för att utesluta evenemang)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunde inte ansluta till Krog & Cos webbplats. Kontrollera internetanslutningen och försök igen."
+    },
+    "abort": {
+      "already_configured": "Den här staden är redan inställd."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Krog & Co Kalender, alternativ",
+        "description": "Ändra kalenderns alternativ.",
+        "data": {
+          "blacklist": "Svartlista (kommaseparerade ord för att utesluta evenemang)",
+          "months": "Antal månader framåt att hämta (1-12)"
+        }
+      }
+    }
+  }
+}
