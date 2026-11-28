@@ -1,6 +1,6 @@
 # Krog & Co Calendar - Home Assistant Integration
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 
 A Home Assistant custom integration that exposes events from Krog & Co restaurants in Sweden as a native calendar entity.
 
@@ -18,20 +18,19 @@ A Home Assistant custom integration that exposes events from Krog & Co restauran
 
 ### Marketplace (recommended)
 
-Krog & Co Calendar can be installed from the Home Assistant Marketplace (Home Assistant 2026.11 or newer). It isn't listed in the default store yet, so add it as a custom repository first.
+Krog & Co Calendar is available in the Home Assistant Marketplace (Home Assistant 2026.11 or newer).
 
 1. Go to **Settings** > **Marketplace**
-2. Open the menu (⋮), select **Custom repositories**, add `https://github.com/jonnybergdahl/HomeAssistant_Krogoco_Integration` with type **Integration**, and select **Add**
-3. Search for **Krog & Co Calendar** and open it
-4. Select **Install**, check the version, and select **Install** again
+2. Search for **Krog & Co Calendar** and open it
+3. Select **Install**, check the version, and select **Install** again
 
-Or click the button to open Krog & Co Calendar directly in the Marketplace. It offers to add the repository as a custom repository for you:
+Or click the button to open Krog & Co Calendar directly in the Marketplace:
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jonnybergdahl&category=Integration&repository=HomeAssistant_Krogoco_Integration)
 
 No restart is needed. Home Assistant goes straight to the setup flow described below.
 
-> On Home Assistant 2024.12 to 2026.10, install Krog & Co Calendar through HACS instead: add the repository as a custom repository (menu ⋮, **Custom repositories**, type **Integration**), search for **Krog & Co Calendar**, click **Download**, then restart Home Assistant.
+> On Home Assistant 2024.12 to 2026.10, install Krog & Co Calendar through HACS instead: search for **Krog & Co Calendar**, click **Download**, then restart Home Assistant.
 
 ### Manual
 
